@@ -1,40 +1,50 @@
-import store from './store';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import store from './store-2';
 
-function IncrementValue({ item }) {
-  return (
-    <button
-      onClick={() => {
-        const state = store.getState();
-        store.setState({
-          ...state,
-          [item]: state[item] + 1,
-        });
-      }}
-    >
-      {item}
-    </button>
-  );
-}
+const useStore = (selector = (state) => state) => {
+  const [state, setState] = useState(selector(store.getState()));
 
-function DisplayValue({ item }) {
-  const value = store.getState();
-  return <div>{value[item]}</div>;
-}
+  useEffect(() => {
+    store.subscribe((state) => setState(selector(state)));
+  }, []);
+
+  return state;
+};
+
+// const DisplayCount = ({ item }) => <span>{useStore()[item]}</span>;
+const DisplayCount = ({ item }) => (
+  <span>{useStore((state) => state[item])}</span>
+);
+
+const IncrementButton = ({ item }) => (
+  <button
+    onClick={() => {
+      const state = store.getState();
+      store.setState({
+        ...state,
+        [item]: state[item] + 1,
+      });
+    }}
+  >
+    {item}
+  </button>
+);
 
 function App() {
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: `1fr 1fr`,
         maxWidth: 600,
         gap: '1rem',
       }}
     >
-      <IncrementValue item='value1' />
-      <DisplayValue item='value1' />
-      <IncrementValue item='value2' />
-      <DisplayValue item='value2' />
+      <IncrementButton item='v1' />
+      <DisplayCount item='v1' />
+      <IncrementButton item='v2' />
+      <DisplayCount item='v2' />
     </div>
   );
 }

@@ -1,14 +1,12 @@
 function createStore(initialState) {
-  let currentState = initialState;
+  let state = initialState;
   const listeners = new Set();
 
   return {
-    getState: () => currentState,
+    getState: () => state,
     setState: (newState) => {
-      currentState = newState;
-      listeners.forEach((listener) => {
-        listener(currentState);
-      });
+      state = newState;
+      listeners.forEach((listener) => listener(state));
     },
     subscribe: (listener) => {
       listeners.add(listener);
@@ -18,8 +16,8 @@ function createStore(initialState) {
 }
 
 const store = createStore({
-  value1: 0,
-  value2: 0,
+  v1: 0,
+  v2: 0,
 });
 
 export default store;
