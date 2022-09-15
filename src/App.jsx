@@ -1,15 +1,11 @@
 import { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import store from './store-2';
 
 const useStore = (selector = (state) => state) => {
-  const [state, setState] = useState(selector(store.getState()));
-
-  useEffect(() => {
-    store.subscribe((state) => setState(selector(state)));
-  }, []);
-
-  return state;
+  return useSyncExternalStore(store.subscribe, () =>
+    selector(store.getState())
+  );
 };
 
 // const DisplayCount = ({ item }) => <span>{useStore()[item]}</span>;
