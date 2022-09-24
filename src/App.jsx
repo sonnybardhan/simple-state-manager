@@ -1,48 +1,20 @@
-import { useEffect } from 'react';
-import { useState, useSyncExternalStore } from 'react';
-import store from './store-2';
-
-const useStore = (selector = (state) => state) => {
-  return useSyncExternalStore(store.subscribe, () =>
-    selector(store.getState())
-  );
-};
-
-// const DisplayCount = ({ item }) => <span>{useStore()[item]}</span>;
-const DisplayCount = ({ item }) => (
-  <span>{useStore((state) => state[item])}</span>
-);
-
-const IncrementButton = ({ item }) => (
-  <button
-    onClick={() => {
-      const state = store.getState();
-      store.setState({
-        ...state,
-        [item]: state[item] + 1,
-      });
-    }}
-  >
-    {item}
-  </button>
-);
-
-function App() {
+import React from 'react';
+import Products from './components/Products';
+import { Link, Routes, Route } from 'react-router-dom';
+import { shopData } from './data';
+import Cart from './components/Cart';
+import Layout from './components/Layout';
+const App = () => {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `1fr 1fr`,
-        maxWidth: 600,
-        gap: '1rem',
-      }}
-    >
-      <IncrementButton item='v1' />
-      <DisplayCount item='v1' />
-      <IncrementButton item='v2' />
-      <DisplayCount item='v2' />
+    <div>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Products products={shopData} />} />
+          <Route path='cart' element={<Cart />} />
+        </Route>
+      </Routes>
     </div>
   );
-}
+};
 
 export default App;
